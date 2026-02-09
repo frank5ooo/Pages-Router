@@ -5,25 +5,14 @@
 // import CardWrapper from '@/app/ui/dashboard/cards';
 
 
-export default function Home() {
+import Layout from '@/components/layout';
+
+export default function DashboardPage() {
   return (
-    <main>
-      <h1 className={`mb-4 text-xl md:text-2xl`}>
-        Dashboaaaaard
-      </h1>
-
-      {/* <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
-
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
-      </div> */}
-    </main>
+    <Layout>
+      <h1 className="text-2xl font-bold">Panel de Control</h1>
+      <p>Bienvenido a tu dashboard, Franco.</p>
+      {/* Aquí va el resto de tus componentes como las Cards o el Chart */}
+    </Layout>
   );
 }
