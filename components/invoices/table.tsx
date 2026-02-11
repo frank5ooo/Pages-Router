@@ -1,24 +1,25 @@
 import Image from "next/image";
-import { UpdateInvoice } from "@/app/ui/invoices/buttons/buttons";
-import InvoiceStatus from "@/app/ui/invoices/status";
-import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
-import { fetchFilteredInvoices } from "@/app/lib/data/filter/fetch-filtered-invoices";
+import { UpdateInvoice } from "@/components/invoices/buttons/buttons";
+import InvoiceStatus from "@/components/invoices/status";
+import { formatDateToLocal, formatCurrency } from "@/components/utils/utils";
 import MarkdownEditor from "./MarkdownEditor";
 import { DeleteInvoice } from "./buttons/deletebutton";
 import OrderStatus from "./orderStatusInvoices";
 
-export default async function InvoicesTable({
-  query,
-  currentPage,
-  status,
-}: {
-  query: string;
-  currentPage: number;
-  status?: string;
-}) {
+interface Invoice {
+  id: string;
+  customer_id: string;
+  status: string;
+  date: string; 
+  price: number;
+  customer: {
+    name: string;
+    email: string;
+    image_url: string;
+  };
+}
+export default function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
 
-  const invoices = await fetchFilteredInvoices({ query, currentPage, status });
-  
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
@@ -52,7 +53,7 @@ export default async function InvoicesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices.data?.map((invoice) => (
+              {invoices?.map((invoice) => (
                 <tr
                   key={invoice.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
@@ -76,7 +77,7 @@ export default async function InvoicesTable({
                     <p>{formatCurrency(invoice.price)}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date.toISOString())}
+                    {formatDateToLocal(invoice.date.toString())}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <InvoiceStatus status={invoice.status} />

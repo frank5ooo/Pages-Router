@@ -1,5 +1,5 @@
-import { prisma } from "@/app/lib/prisma";
-import { actionClient } from "@/app/lib/safe-action";
+import { prisma } from "@/components/prisma";
+import { actionClient } from "pages/safe-action";
 import { z } from "zod";
 
 const ITEMS_PER_PAGE = 6;
@@ -44,7 +44,7 @@ export const fetchFilteredInvoices = actionClient
 
     try {
 
-      const invoices = await prisma.invoice.findMany({
+      const invoices = prisma.invoice.findMany({
         take: ITEMS_PER_PAGE,
         skip: offset,
         select: {

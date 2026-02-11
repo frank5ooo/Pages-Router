@@ -1,5 +1,5 @@
-import { prisma } from "@/app/lib/prisma";
-import { actionClient } from "@/app/lib/safe-action";
+import { prisma } from "@/components/prisma";
+import { actionClient } from "pages/safe-action";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 

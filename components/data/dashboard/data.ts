@@ -1,4 +1,4 @@
-import { formatCurrency } from "../../utils";
+import { formatCurrency } from "components/utils/utils";
 import { prisma } from "../../prisma";
 
 export async function fetchRevenue() {

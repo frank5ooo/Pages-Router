@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   CheckIcon,
@@ -7,11 +5,11 @@ import {
   UserCircleIcon,
   TruckIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "@/app/ui/button";
-import { Customer, Product } from "@prisma/client";
+import { Button } from "@/components/button";
+// import { Customer, Product } from "@prisma/client";
 import { MultiSelect } from "primereact/multiselect";
 import { useState } from "react";
-import { createInvoice } from "@/app/lib/actions/invoice/createInvoice";
+import { createInvoiceAction } from "@/components/invoices/actions";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 
@@ -20,33 +18,41 @@ type SelectOption = {
   name: string;
 };
 
+
 export default function Form({
   customers,
   products,
-}: {
-  customers: Pick<Customer, "id" | "name">[];
-  products: Pick<Product, "id" | "name">[];
 }) {
   const [selectedProducts, setSelectedProducts] = useState<SelectOption[]>([]);
-  const { executeAsync, hasErrored } = useAction(createInvoice);
+  // const { executeAsync, hasErrored } = useAction(createInvoice);
+
+  // async function handleSubmit(formData: FormData) {
+  //   try {
+  //     const { data, ...errors } = await executeAsync(formData);
+  //     if (errors.validationErrors || errors.serverError) {
+  //       throw errors;
+  //     } else {
+  //       router.push("/invoices");
+  //     }
+  //   } catch (errors) {
+  //     console.log(errors);
+  //   }
+
   const router = useRouter();
+  const { execute, executeAsync, hasErrored } = useAction(createInvoiceAction, {
+    onSuccess: ({ data }) => {
+      router.push("/invoices");
+    },
+  });
 
-  async function handleSubmit(formData: FormData) {
-    try {
-      const { data, ...errors } = await executeAsync(formData);
-      if (errors.validationErrors || errors.serverError) {
-        throw errors;
-      } else {
-        router.push("/dashboard/invoices");
-      }
-    } catch (errors) {
-      console.log(errors);
-    }
-  }
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
 
+    execute(formData);
+  };
   return (
-    <form action={handleSubmit}>
-      {hasErrored && "AHHHHHHHHHHH"}
+    <form onSubmit={handleSubmit}>
 
       {/* Customer Name */}
       <div className="mb-4">
@@ -152,21 +158,13 @@ export default function Form({
                   Paid <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
-              <div id="status-error" aria-live="polite" aria-atomic="true">
-                {/* {state.errors?.status &&
-                  state.errors.status.map((error: string) => (
-                    <p className="mt-2 text-sm text-red-500" key={error}>
-                      {error}
-                    </p>
-                  ))} */}
-              </div>
             </div>
           </div>
         </fieldset>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/invoices"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel

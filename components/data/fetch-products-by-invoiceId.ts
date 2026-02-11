@@ -1,30 +1,15 @@
-"use server";
-
-import { prisma } from "@/app/lib/prisma";
-import { actionClient } from "@/app/lib/safe-action";
+import { prisma } from "../prisma";
+import { actionClient } from "pages/safe-action";
 import { z } from "zod";
+import { getProductsByInvoiceId } from "../../lib/data-invoices";
+
 
 const FormSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
 });
 
 export const fetchProductsByInvoiceId = actionClient
   .inputSchema(FormSchema)
   .action(async ({ parsedInput }) => {
-    try {
-      const product = await prisma.product.findMany({
-        where: {
-          invoice_id: parsedInput.id,
-        },
-        select: {
-          name: true,
-          price: true,
-        },
-      });
-
-      return product;
-    } catch (err) {
-      console.error("Database Error:", err);
-      throw new Error("Failed to fetch all product.");
-    }
-  });
+    return await getProductsByInvoiceId(parsedInput.id);
+  }); 

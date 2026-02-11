@@ -1,6 +1,4 @@
-"use server";
-
-import { prisma } from "@/app/lib/prisma";
+import { prisma } from "../prisma";
 
 export async function fetchProductsWithNoId() {
   try {

@@ -1,7 +1,5 @@
-"use server";
-
-import { prisma } from "@/app/lib/prisma";
-import { actionClient } from "@/app/lib/safe-action";
+import { prisma } from "../prisma";
+import { actionClient } from "pages/safe-action";
 import { z } from "zod";
 
 const FormSchema = z.object({

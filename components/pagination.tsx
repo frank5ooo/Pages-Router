@@ -1,15 +1,14 @@
-'use client';
-
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { generatePagination } from '@/app/lib/utils';
+import { generatePagination } from 'components/utils/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function Pagination({ totalPages, currentPage  }: { totalPages: number , currentPage: number }) 
-{
+export default function Pagination({ totalPages, currentPage }: { totalPages: number, currentPage: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  if (!totalPages || totalPages <= 0) return null;
 
   const createPageURL = (pageNumber: number | string) => {
     const params = new URLSearchParams(searchParams);

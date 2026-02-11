@@ -21,15 +21,8 @@ export async function fetchLatestInvoices() {
         date: "desc",
       },
       take: 5,
-      select: {
-        id: true,
-        customer: {
-          select: {
-            name: true,
-            email: true,
-            image_url: true,
-          },
-        },
+      include: {
+        customer: true,
         products: {
           select: {
             price: true,
@@ -45,6 +38,8 @@ export async function fetchLatestInvoices() {
       );
       return {
         ...invoice,
+        date: invoice.date.toISOString(),
+        amount: total,
         price: formatCurrency(total),
       };
     });

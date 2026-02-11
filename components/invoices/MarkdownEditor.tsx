@@ -1,8 +1,6 @@
-"use client";
-
-import { useState, Suspense } from "react";
+import { Suspense } from "react";
 import Loading from "./loading";
-import { fetchProductsByInvoiceId } from "@/app/lib/data/fetch-products-by-invoiceId";
+import { fetchProductsByInvoiceId } from "@/components/data/fetch-products-by-invoiceId";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import "react-tooltip/dist/react-tooltip.css";
 import * as React from "react";
@@ -23,7 +21,7 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   },
 }));
 
-type ProductData = { name: string; price: BigInt };
+type ProductData = { name: string; price: number };
 
 export default function MarkdownEditor({ id }: { id: string }) {
   const [open, setOpen] = React.useState(false);
@@ -35,18 +33,19 @@ export default function MarkdownEditor({ id }: { id: string }) {
     setOpen(false);
   };
 
-  const handleTooltipOpen = () => {
+  const handleTooltipOpen = async () => {
     setOpen(true);
 
     if (!fetchDatos) {
-      fetchProductsByInvoiceId({ id }).then((res) => {
-        if (res.data) {
-          // Nos quedamos solo con el array de productos
-          setFetchDatos(res.data);
-        } else {
-          console.error("Error al traer productos:", res);
+      try {
+        const res = fetchProductsByInvoiceId({ id });
+        if (res) {
+          // Asegúrate de que el servidor devuelva 'number' y no 'bigint'
+          setFetchDatos(res as unknown as ProductData[]);
         }
-      });
+      } catch (err) {
+        console.error("Fallo crítico:", err);
+      }
     }
   };
 

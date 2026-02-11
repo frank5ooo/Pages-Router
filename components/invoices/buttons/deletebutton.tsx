@@ -1,7 +1,7 @@
 "use client";
 
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { deleteInvoice } from "@/app/lib/actions/invoice/deleteInvoice";
+import { deleteInvoice } from "@/components/invoices/deleteInvoice";
 
 export function DeleteInvoice({ id }: { id: string }) {
   const handleSubmit = async (e: React.FormEvent) => {

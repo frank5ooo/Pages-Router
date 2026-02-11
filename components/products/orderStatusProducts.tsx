@@ -1,10 +1,12 @@
+"use client";
+
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function OrderStatus() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter(); // <- usamos router directamente
+  const router = useRouter();
 
   const [selectedStatus, setSelectedStatus] = useState(
     searchParams.get("status") || ""
@@ -25,13 +27,9 @@ export default function OrderStatus() {
     } else {
       params.delete("status");
     }
-
-    // Siempre resetear la página a 1 al cambiar filtro
     params.set("page", "1");
 
-    // Reemplaza la URL sin recargar la página
-    router.replace(`${pathname}?${params.toString()}`);
-    
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -44,8 +42,8 @@ export default function OrderStatus() {
       onChange={handleStatusChange}
     >
       <option value="">All</option>
-      <option value="paid">Paid</option>
-      <option value="pending">Pending</option>
+      <option value="Sell">Sell</option>
+      <option value="OnStock">OnStock</option>
     </select>
   );
 }
