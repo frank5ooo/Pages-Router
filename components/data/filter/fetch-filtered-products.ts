@@ -1,6 +1,4 @@
 import { prisma } from "@/components/prisma";
-import { actionClient } from "pages/safe-action";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const ITEMS_PER_PAGE = 6;
@@ -11,11 +9,9 @@ const FormSchema = z.object({
   status: z.string().optional(),
 });
 
-export const fetchFilteredProducts = actionClient
-  .inputSchema(FormSchema)
-  .action(async ({ parsedInput }) => {
-    const offset = (parsedInput.currentPage - 1) * ITEMS_PER_PAGE;
-    const maybePrice = Number(parsedInput.query) * 100;
+export async function fetchFilteredProducts(query, currentPage, status) {
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    const maybePrice = Number(query) * 100;
     const isNumber = !isNaN(maybePrice);
 
     try {
@@ -23,19 +19,19 @@ export const fetchFilteredProducts = actionClient
         take: ITEMS_PER_PAGE,
         skip: offset,
         where: {
-          ...(parsedInput.status && parsedInput.status == "Sell"
+          ...(status && status == "Sell"
             ? { invoice_id: { not: null } }
             : {}),
 
-          ...(parsedInput.status && parsedInput.status == "OnStock"
+          ...(status && status == "OnStock"
             ? { invoice_id: { equals: null } }
             : {}),
 
-          ...(parsedInput.query && parsedInput.query !== ""
+          ...(query && query !== ""
             ? {
                 OR: [
                   {
-                    name: { contains: parsedInput.query, mode: "insensitive" },
+                    name: { contains: query, mode: "insensitive" },
                   },
                   ...(isNumber
                     ? [
@@ -55,12 +51,9 @@ export const fetchFilteredProducts = actionClient
         },
       });
 
-
-      
-
       return products;
     } catch (error) {
       console.error("Database Error:", error);
       throw new Error("Failed to fetch products.");
     }
-  });
+  }

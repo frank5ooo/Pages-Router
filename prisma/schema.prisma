@@ -29,9 +29,9 @@ model Invoice {
 }
 
 model Revenue {
+  id      String @id @default(uuid())
   month   String @unique @db.VarChar(4)
   revenue Int
-  id      String @id @default(uuid())
 
   @@map("revenue")
 }
@@ -47,10 +47,10 @@ model User {
 
 model Product {
   id         String   @id @default(uuid())
-  price      BigInt
-  invoice_id String?
   /// Datos del producto
   name       String
+  price      BigInt
+  invoice_id String?
   invoice    Invoice? @relation(fields: [invoice_id], references: [id])
 
   @@map("products")

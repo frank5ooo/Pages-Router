@@ -1,5 +1,3 @@
-"use client";
-
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -8,9 +6,7 @@ export default function OrderStatus() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [selectedStatus, setSelectedStatus] = useState(
-    searchParams.get("status") || ""
-  );
+  const [selectedStatus, setSelectedStatus] = useState(searchParams.get("status") || "");
 
   useEffect(() => {
     setSelectedStatus(searchParams.get("status") || "");

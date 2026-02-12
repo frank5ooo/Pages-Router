@@ -6,10 +6,7 @@ import { GetServerSideProps } from "next";
 import Layout from '@/components/layout';
 import { getInvoicesPagesCount, getFilteredInvoices } from "@/lib/data-invoices";
 
-
-export default function Page({ invoices, currentPage, totalPages }) {
-
-  console.log("Total Pages:" + totalPages);
+export default function Page({ invoices, currentPage, totalPages }:any) {
 
   return (
     <Layout>

@@ -6,11 +6,8 @@ import {
   TruckIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/components/button";
-// import { Customer, Product } from "@prisma/client";
 import { MultiSelect } from "primereact/multiselect";
 import { useState } from "react";
-import { createInvoiceAction } from "@/components/invoices/actions";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 
 type SelectOption = {
@@ -18,39 +15,41 @@ type SelectOption = {
   name: string;
 };
 
-
 export default function Form({
   customers,
   products,
 }) {
   const [selectedProducts, setSelectedProducts] = useState<SelectOption[]>([]);
-  // const { executeAsync, hasErrored } = useAction(createInvoice);
-
-  // async function handleSubmit(formData: FormData) {
-  //   try {
-  //     const { data, ...errors } = await executeAsync(formData);
-  //     if (errors.validationErrors || errors.serverError) {
-  //       throw errors;
-  //     } else {
-  //       router.push("/invoices");
-  //     }
-  //   } catch (errors) {
-  //     console.log(errors);
-  //   }
 
   const router = useRouter();
-  const { execute, executeAsync, hasErrored } = useAction(createInvoiceAction, {
-    onSuccess: ({ data }) => {
-      router.push("/invoices");
-    },
-  });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
 
-    execute(formData);
+    const formData = new FormData(event.currentTarget);
+    const data = {
+      customerId: formData.get('customerId'),
+      status: formData.get('status'),
+      productIds: formData.get('productIds')?.toString().split(',') || [],
+    };
+
+    try {
+      const response = await fetch('/api/invoices', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        router.push("/invoices");
+      } else {
+        console.error("Error en el servidor");
+      }
+    } catch (error) {
+      console.error("Error de red", error);
+    }
   };
+
   return (
     <form onSubmit={handleSubmit}>
 

@@ -4,11 +4,9 @@ import { useState, useEffect } from "react";
 export default function OrderStatus() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter(); // <- usamos router directamente
+  const router = useRouter();
 
-  const [selectedStatus, setSelectedStatus] = useState(
-    searchParams.get("status") || ""
-  );
+  const [selectedStatus, setSelectedStatus] = useState(searchParams.get("status") || "");
 
   useEffect(() => {
     setSelectedStatus(searchParams.get("status") || "");
@@ -25,13 +23,8 @@ export default function OrderStatus() {
     } else {
       params.delete("status");
     }
-
-    // Siempre resetear la página a 1 al cambiar filtro
     params.set("page", "1");
-
-    // Reemplaza la URL sin recargar la página
     router.replace(`${pathname}?${params.toString()}`);
-    
   };
 
   return (

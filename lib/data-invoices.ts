@@ -24,22 +24,18 @@ export async function getInvoicesPagesCount({ query, status, perPage = 6 }: { qu
   return Math.ceil(totalItems / perPage);
 }
 
-// lib/data-invoices.ts
 export async function getFilteredInvoices({ query, currentPage, status }: { query: string, currentPage: number, status: string }) {
   const itemsPerPage = 6;
   const offset = (currentPage - 1) * itemsPerPage;
 
-  // 1. Definimos las variables de apoyo para el precio
   const maybePrice = Number(query) * 100;
   const isNumber = !isNaN(maybePrice) && query !== "";
 
   return await prisma.invoice.findMany({
     where: {
-      // Filtro por estado (si existe)
       ...(status && status !== ""
         ? { status: { equals: status, mode: "insensitive" as const } }
         : {}),
-      // Filtro por búsqueda global (query)
       ...(query && query !== ""
         ? {
           OR: [

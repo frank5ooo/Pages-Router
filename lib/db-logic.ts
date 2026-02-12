@@ -1,4 +1,3 @@
-// lib/db-logic.ts
 import { prisma } from "@/components/prisma";
 
 export async function createInvoiceDb(parsedInput: any) {
@@ -17,8 +16,26 @@ export async function createInvoiceDb(parsedInput: any) {
     } catch (error) {
         console.error("Error Prisma:", error);
         throw new Error("Failed to create invoice.");
+    }
+}
+
+export async function createProductDb(parsedInput: any) {
+
+    const { name, price } = parsedInput.data;
+
+    const priceInCents = Math.round(price * 100);
+    try {
+        await prisma.product.create({
+            data: {
+                invoice_id: null,
+                name: name,
+                price: priceInCents,
+            },
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error Prisma:", error);
+        throw new Error("Failed to create invoice.");
 
     }
 }
-// ... (mueve aquí también getFilteredInvoices, getInvoicesPagesCount, etc.)
-

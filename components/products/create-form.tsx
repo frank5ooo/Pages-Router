@@ -1,11 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import { CurrencyDollarIcon, TruckIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/button";
 import { useState } from "react";
-import { createProduct } from "@/components/products/createProduct";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 
 type ProductForm = {
@@ -16,33 +12,37 @@ type ProductForm = {
 };
 
 export default function Form({ product }: ProductForm) {
+
   const [formData, setFormData] = useState({
     name: product?.name || "",
     price: product?.price || "",
   });
+
   const router = useRouter();
 
-  const { executeAsync } = useAction(createProduct);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const dataToSend = {
       name: formData.name,
       price: Number(formData.price),
     };
 
     try {
-      const result = await executeAsync(dataToSend);
+      // const result = await executeAsync(dataToSend);
+      const response = await fetch('/api/createProduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+      });
 
-      if (result?.validationErrors) {
-        console.error(result.validationErrors);
-      } else if (result?.serverError) {
-        console.error(result.serverError);
+      if (response.ok) {
+        router.push("/products");
       } else {
-        console.debug("Producto Creado");
+        console.error("Error en el servidor");
       }
 
-      router.push("/dashboard/products");
+      router.push("/products");
     } catch (error) {
       console.error(error);
     }
@@ -65,12 +65,7 @@ export default function Form({ product }: ProductForm) {
             className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
             aria-describedby="product-error"
             value={formData.name}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                name: e.target.value,
-              }))
-            }
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
           />
           <TruckIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -93,12 +88,7 @@ export default function Form({ product }: ProductForm) {
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="price-error"
               value={formData.price}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  price: e.target.value,
-                }))
-              }
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
               required
             />
             <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -107,12 +97,12 @@ export default function Form({ product }: ProductForm) {
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/products"
+          href="/products"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
         </Link>
-        <Button type="submit">Create Product</Button>
+        <Button type="submit" name="submit">Create Product</Button>
       </div>
     </form>
   );

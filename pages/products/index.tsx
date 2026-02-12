@@ -6,24 +6,29 @@ import { CreateProduct } from "@/components/products/buttons/buttons";
 import { fetchProductPages } from "@/components/data/pagination/fetch-products-pages"; // Función directa de Prisma
 import { GetServerSideProps } from "next";
 import { fetchFilteredProducts } from "@/components/data/filter/fetch-filtered-products"; // Función directa de Prisma
+import Layout from "@/components/layout";
+
+
 export default function Page({ products, currentPage, totalPages }: any) {
 
   return (
-    <div className="w-full">
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-2xl">Products</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search products..." />
-        <CreateProduct />
-      </div>
+    <Layout>
+      <div className="w-full">
+        <div className="flex w-full items-center justify-between">
+          <h1 className="text-2xl">Products</h1>
+        </div>
+        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+          <Search placeholder="Search products..." />
+          <CreateProduct />
+        </div>
 
-      <Table products={products} />
+        <Table products={products} />
 
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} currentPage={currentPage} />
+        <div className="mt-5 flex w-full justify-center">
+          <Pagination totalPages={totalPages} currentPage={currentPage} />
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 
@@ -33,9 +38,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const status = (context.query.status as string) || "";
 
   const [products, totalPages] = await Promise.all([
-    fetchFilteredProducts({ query, currentPage }), // Trae el array de productos
-    fetchProductPages({ query })             // Trae el número de páginas
+    fetchFilteredProducts(query, currentPage, status), // Trae el array de productos
+    fetchProductPages(query, status, currentPage)             // Trae el número de páginas
   ]);
+
   return {
     props: {
       products: JSON.parse(

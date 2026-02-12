@@ -1,12 +1,10 @@
 import { UpdateProduct } from "@/components/products/buttons/buttons";
 import { formatCurrency } from "@/components/utils/utils";
-import { fetchFilteredProducts } from "@/components/data/filter/fetch-filtered-products";
 import { DeleteProduct } from "./buttons/deleteButtons";
 import ProductStatus from "./status";
 import OrderStatus from "./orderStatusProducts";
 
-export default function ProductsTable(products){
-  // const products = await fetchFilteredProducts({ query, currentPage, status });
+export default function ProductsTable({ products }: any) {
 
   return (
     <div className="mt-6 flow-root">
@@ -32,7 +30,7 @@ export default function ProductsTable(products){
               </tr>
             </thead>
             <tbody className="bg-white">
-              {products?.map((product) => (
+              {products.map((product) => (
                 <tr
                   key={product.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"

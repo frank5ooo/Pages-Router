@@ -12,7 +12,8 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
-export default function CardWrapper({ data }: { data: any }) {  const {
+export default function CardWrapper({ data }: { data: any }) {
+  const {
     numberOfInvoices,
     numberOfCustomers,
     totalPaidInvoices,
@@ -30,16 +31,7 @@ export default function CardWrapper({ data }: { data: any }) {  const {
   );
 }
 
-export function Card({
-  title,
-  value,
-  type,
-}: {
-  title: string;
-  value: number | string;
-  type: keyof typeof iconMap;
-}) 
-{
+export function Card({ title, value, type, }: { title: string; value: number | string; type: keyof typeof iconMap; }) {
   const Icon = iconMap[type];
 
   return (

@@ -1,19 +1,6 @@
 import { formatCurrency } from "@/components/utils/utils";
 import { prisma } from "../prisma";
 
-// export async function fetchRevenue() {
-//   try {
-//     await new Promise((resolve) => setTimeout(resolve, 3000));
-
-//     const data = await prisma.revenue.findMany();
-
-//     return data;
-//   } catch (error) {
-//     console.error("Database Error:", error);
-//     throw new Error("Failed to fetch revenue data.");
-//   }
-// }
-
 export async function fetchLatestInvoices() {
   try {
     const data = await prisma.invoice.findMany({

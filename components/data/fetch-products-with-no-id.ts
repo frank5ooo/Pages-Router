@@ -1,6 +1,6 @@
 import { prisma } from "../prisma";
 
-export async function fetchProductsWithNoId() {
+export async function fetchProductsWithNoId(query, currentPage) {
   try {
     const product = await prisma.product.findMany({
       where: {

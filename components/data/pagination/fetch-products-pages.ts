@@ -1,5 +1,4 @@
-import { prisma } from "components/prisma";
-import { actionClient } from "pages/safe-action";
+import { prisma } from "@/components/prisma";
 import { z } from "zod/v4";
 import { payloadSchema } from "../../definitions";
 
@@ -10,30 +9,27 @@ const FormSchema = payloadSchema(
   })
 );
 
-export const fetchProductPages = actionClient
-  .inputSchema(FormSchema)
-  .action(async ({ parsedInput }) => {
-    const { data, pagination } = parsedInput;
+export async function fetchProductPages(query, status, perPage)  {
 
-    const maybePrice = Number(data.query) * 100;
+    const maybePrice = Number(query) * 100;
     const isNumber = !isNaN(maybePrice);
 
     try {
       const total = await prisma.product.count({
         where: {
-          ...(data.status && data.status == "Sell"
+          ...(status && status == "Sell"
             ? { invoice_id: { not: null } }
             : {}),
 
-          ...(data.status && data.status == "OnStock"
+          ...(status && status == "OnStock"
             ? { invoice_id: { equals: null } }
             : {}),
 
-          ...(data.query && data.query !== ""
+          ...(query && query !== ""
             ? {
                 OR: [
                   {
-                    name: { contains: data.query, mode: "insensitive" },
+                    name: { contains: query, mode: "insensitive" },
                   },
                   ...(isNumber
                     ? [
@@ -50,7 +46,6 @@ export const fetchProductPages = actionClient
         },
       });
 
-      const perPage = pagination.perPage;
       const totalPages = Math.ceil(total / perPage);
       // console.log("totalPages fetch", totalPages);
       return totalPages;
@@ -58,4 +53,4 @@ export const fetchProductPages = actionClient
       console.error("Database Error:", error);
       throw new Error("Failed to fetch total number of invoices.");
     }
-  });
+  }
