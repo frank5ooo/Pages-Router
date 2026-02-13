@@ -2,12 +2,11 @@ import Pagination from "@/components/pagination";
 import Search from "@/components/search";
 import Table from "@/components/products/table";
 import { CreateProduct } from "@/components/products/buttons/buttons";
-// import { InvoicesTableSkeleton } from "@/components/skeletons";
-import { fetchProductPages } from "@/components/data/pagination/fetch-products-pages"; // Función directa de Prisma
+import { InvoicesTableSkeleton } from "@/components/skeletons";
+import { fetchProductPages } from "@/components/data/pagination/fetch-products-pages";
 import { GetServerSideProps } from "next";
-import { fetchFilteredProducts } from "@/components/data/filter/fetch-filtered-products"; // Función directa de Prisma
+import { fetchFilteredProducts } from "@/components/data/filter/fetch-filtered-products";
 import Layout from "@/components/layout";
-
 
 export default function Page({ products, currentPage, totalPages }: any) {
 
@@ -38,8 +37,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const status = (context.query.status as string) || "";
 
   const [products, totalPages] = await Promise.all([
-    fetchFilteredProducts(query, currentPage, status), // Trae el array de productos
-    fetchProductPages(query, status, currentPage)             // Trae el número de páginas
+    fetchFilteredProducts({query, currentPage, status}), 
+    fetchProductPages(query, status, currentPage)
   ]);
 
   return {

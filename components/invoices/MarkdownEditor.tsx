@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Loading from "./loading";
-import { fetchProductsByInvoiceId } from "@/components/data/fetch-products-by-invoiceId";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import "react-tooltip/dist/react-tooltip.css";
 import * as React from "react";
@@ -17,7 +16,7 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     color: "rgba(0, 0, 0, 0.87)",
     boxShadow: theme.shadows[1],
     fontSize: 15,
-    maxWidth: 300, // limita ancho para que no sea muy ancho
+    maxWidth: 300,
   },
 }));
 
@@ -38,9 +37,13 @@ export default function MarkdownEditor({ id }: { id: string }) {
 
     if (!fetchDatos) {
       try {
-        const res = fetchProductsByInvoiceId({ id });
+        const res = await fetch("api/productsById", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        }).then((res) => res.json());
         if (res) {
-          // Asegúrate de que el servidor devuelva 'number' y no 'bigint'
+          console.log("Datos recibidos:", res);
           setFetchDatos(res as unknown as ProductData[]);
         }
       } catch (err) {
@@ -49,7 +52,6 @@ export default function MarkdownEditor({ id }: { id: string }) {
     }
   };
 
-  // console.log("fetchDatos1", fetchDatos);
   return (
     <>
       <ClickAwayListener onClickAway={handleTooltipClose}>

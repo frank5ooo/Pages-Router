@@ -1,5 +1,4 @@
 import { prisma } from "@/components/prisma";
-import { actionClient } from "pages/safe-action";
 import { z } from "zod";
 
 const ITEMS_PER_PAGE = 6;
@@ -10,41 +9,37 @@ const FormSchema = z.object({
   status: z.string().optional(),
 });
 
-export const fetchFilteredInvoices = actionClient
-  .inputSchema(FormSchema)
-  .action(async ({ parsedInput }) => {
+export async function fetchFilteredInvoice(parsedInput: any) {
     const offset = (parsedInput.currentPage - 1) * ITEMS_PER_PAGE;
     const maybePrice = Number(parsedInput.query) * 100;
     const isNumber = !isNaN(maybePrice);
 
-    // Construir filtros reutilizables
     const filters: any = {
       ...(parsedInput.status && parsedInput.status !== ""
         ? { status: { equals: parsedInput.status, mode: "insensitive" } }
         : {}),
       ...(parsedInput.query && parsedInput.query !== ""
         ? {
-            OR: [
-              { customer: { name: { contains: parsedInput.query, mode: "insensitive" } } },
-              { customer: { email: { contains: parsedInput.query, mode: "insensitive" } } },
-              { status: { contains: parsedInput.query, mode: "insensitive" } },
-              ...(isNumber
-                ? [
-                    {
-                      products: {
-                        some: { price: { equals: maybePrice } },
-                      },
-                    },
-                  ]
-                : []),
-            ],
-          }
+          OR: [
+            { customer: { name: { contains: parsedInput.query, mode: "insensitive" } } },
+            { customer: { email: { contains: parsedInput.query, mode: "insensitive" } } },
+            { status: { contains: parsedInput.query, mode: "insensitive" } },
+            ...(isNumber
+              ? [
+                {
+                  products: {
+                    some: { price: { equals: maybePrice } },
+                  },
+                },
+              ]
+              : []),
+          ],
+        }
         : {}),
     };
 
     try {
-
-      const invoices = prisma.invoice.findMany({
+      const invoices = await prisma.invoice.findMany({
         take: ITEMS_PER_PAGE,
         skip: offset,
         select: {
@@ -61,7 +56,6 @@ export const fetchFilteredInvoices = actionClient
       });
 
 
-      // 3️⃣ Mapear precios y devolver
       return invoices.map(({ products, ...invoice }) => {
         const price = products.reduce(
           (sum, prod) => sum + Number(prod.price),
@@ -76,4 +70,4 @@ export const fetchFilteredInvoices = actionClient
       console.error("Database Error:", error);
       throw new Error("Failed to fetch invoices.");
     }
-  });
+  }

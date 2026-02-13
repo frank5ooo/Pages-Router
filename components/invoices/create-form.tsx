@@ -15,10 +15,7 @@ type SelectOption = {
   name: string;
 };
 
-export default function Form({
-  customers,
-  products,
-}) {
+export default function Form({ customers, products }: { customers: SelectOption[], products: SelectOption[] }) {
   const [selectedProducts, setSelectedProducts] = useState<SelectOption[]>([]);
 
   const router = useRouter();
@@ -34,7 +31,7 @@ export default function Form({
     };
 
     try {
-      const response = await fetch('/api/invoices', { 
+      const response = await fetch('/api/updateInvoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

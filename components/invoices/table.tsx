@@ -10,7 +10,7 @@ interface Invoice {
   id: string;
   customer_id: string;
   status: string;
-  date: string; 
+  date: string;
   price: number;
   customer: {
     name: string;
@@ -19,6 +19,8 @@ interface Invoice {
   };
 }
 export default function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
+
+  console.log("Invoices recibidas en el componente:", invoices);
 
   return (
     <div className="mt-6 flow-root">

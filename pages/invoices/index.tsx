@@ -4,7 +4,8 @@ import Table from "@/components/invoices/table";
 import { CreateInvoice } from "@/components/invoices/buttons/buttons";
 import { GetServerSideProps } from "next";
 import Layout from '@/components/layout';
-import { getInvoicesPagesCount, getFilteredInvoices } from "@/lib/data-invoices";
+import { getInvoicesPagesCount } from "@/lib/data-invoices";
+import { fetchFilteredInvoice} from "@/components/data/filter/fetch-filtered-invoice";
 
 export default function Page({ invoices, currentPage, totalPages }:any) {
 
@@ -36,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const [totalPages, rawInvoices] = await Promise.all([
     getInvoicesPagesCount({ query, status, perPage: 6 }),
-    getFilteredInvoices({ query, currentPage, status })
+    fetchFilteredInvoice({ query, currentPage, status })
   ]);
 
   return {

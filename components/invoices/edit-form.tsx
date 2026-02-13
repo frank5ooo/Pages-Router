@@ -1,5 +1,3 @@
-"use client";
-
 import {
   CheckIcon,
   ClockIcon,
@@ -7,13 +5,11 @@ import {
   TruckIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { Button } from "@/app/ui/button";
-import { updateInvoice } from "@/app/lib/actions/invoice/updateInvoice";
+import { Button } from "@/components/button";
 import { useEffect, useMemo } from "react";
 import { MultiSelect } from "primereact/multiselect";
 import { useState } from "react";
 import { Customer, Prisma, Product } from "@prisma/client";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 
 type SelectOption = {
@@ -34,27 +30,42 @@ export default function EditInvoiceForm({
   customers: Pick<Customer, "id" | "name">[];
   products: Pick<Product, "id" | "name">[];
 }) {
-  const availableProducts = useMemo(
-    () => [...invoice.products, ...products],
-    [invoice.products, products]
-  );
-  const { executeAsync } = useAction(updateInvoice);
+  console.log("Invoice in Edit Form:", invoice); // Debug log
+  console.log("Customers in Edit Form:", customers); // Debug log
+  console.log("Products in Edit Form:", products); // Debug log
+
+  const availableProducts = useMemo(() => {
+    const currentProducts = Array.isArray(invoice?.products) ? invoice.products : [];
+    const extraProducts = Array.isArray(products) ? products : [];
+
+    return [...currentProducts, ...extraProducts];
+  }, [invoice.products, products]);
+
   const router = useRouter();
 
-  // console.log("invoice.products", invoice.products);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Detenemos el envío tradicional
 
-  async function handleSubmit(formData: FormData) {
+    const formData = new FormData(event.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    // El MultiSelect de PrimeReact pone los IDs en un string separado por comas
+    // en el input oculto "productIds". Esto está perfecto para tu Zod Schema.
+
     try {
-      const { data, ...errors } = await executeAsync(formData);
-      if (errors.validationErrors || errors.serverError) {
-        throw errors;
+      const result = await fetch("/api/updateInvoice", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (result.ok) {
+        router.push("/invoices");
       }
-      router.push("/dashboard/invoices");
-    } catch (errors) {
-      // console.log("errors", errors);
-      console.error(errors);
+    } catch (error) {
+      console.error("Error al actualizar:", error);
     }
-  }
+  };
   const [selectedProducts, setSelectedProducts] = useState<SelectOption[]>([]);
 
   useEffect(() => {
@@ -65,7 +76,7 @@ export default function EditInvoiceForm({
   }, [invoice.products, availableProducts]);
 
   return (
-    <form action={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <input type="hidden" name="invoiceId" value={invoice.id} />
 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -162,7 +173,7 @@ export default function EditInvoiceForm({
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/invoices"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel

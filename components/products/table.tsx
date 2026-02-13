@@ -3,8 +3,20 @@ import { formatCurrency } from "@/components/utils/utils";
 import { DeleteProduct } from "./buttons/deleteButtons";
 import ProductStatus from "./status";
 import OrderStatus from "./orderStatusProducts";
+interface Product {
+  id: string;
+  name: string;
+  price: number | string;
+  invoice_id: string;
+}
 
-export default function ProductsTable({ products }: any) {
+interface ProductsTableProps {
+  products: Product[];
+}
+
+export default function ProductsTable({ products }: ProductsTableProps) {
+
+  console.log("Products recibidos en el componente:", products); // Verifica que los productos se reciban correctamente
 
   return (
     <div className="mt-6 flow-root">

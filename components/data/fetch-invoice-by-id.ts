@@ -5,17 +5,19 @@ const FormSchema = z.object({
   id: z.string(),
 });
 
-export async function fetchProductById(parsedInput: any) {
+export async function fetchInvoiceById(parsedInput: any) {
 
-  console.log("Fetching product with ID:", parsedInput.id);
+  console.log("Fetching invoice with ID:", parsedInput.id);
   
   try {
-    const data = await prisma.product.findUnique({
+    const data = await prisma.invoice.findUnique({
       where: { id: parsedInput.id },
       select: {
         id: true,
-        name: true,
-        price: true,
+        customer_id: true,
+        status: true,
+        date: true,
+        products: true,
       },
     });
 

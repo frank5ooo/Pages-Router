@@ -1,26 +1,27 @@
-"use client";
-
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { deleteInvoice } from "@/components/invoices/deleteInvoice";
+import { useRouter } from "next/router"; 
 
 export function DeleteInvoice({ id }: { id: string }) {
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const router = useRouter();
 
-    const dataToSend = {
-      id,
-    };
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     try {
-      const result = await deleteInvoice(dataToSend);
+      const response = await fetch('/api/deleteInvoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
 
-      if (result?.serverError) {
-        console.error(result?.serverError);
+      if (response.ok) {
+        console.log("Eliminado con éxito");
+        router.replace(router.asPath);
       } else {
-        console.debug("Producto Creado");
+        console.error("Error en el servidor");
       }
     } catch (error) {
-        console.error(error);
+      console.error("Error de red", error);
     }
   };
 
