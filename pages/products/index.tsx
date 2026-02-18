@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const [products, totalPages] = await Promise.all([
     fetchFilteredProducts({query, currentPage, status}), 
-    fetchProductPages(query, status, currentPage)
+    fetchProductPages(query, status)
   ]);
 
   return {
@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           typeof value === "bigint" ? value.toString() : value
         )
       ),
-      totalPages: totalPages ?? 1,
+      totalPages: totalPages ,
       currentPage,
     },
   };

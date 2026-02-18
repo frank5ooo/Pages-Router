@@ -7,8 +7,12 @@ const FormSchema = z.object({
 
 export async function fetchInvoiceById(parsedInput: any) {
 
-  console.log("Fetching invoice with ID:", parsedInput.id);
-  
+  const validated = FormSchema.safeParse({ id: parsedInput.id });
+
+  if (!validated.success) {
+    console.error("Parámetros de búsqueda inválidos:", validated.error);
+    return 0;
+  }
   try {
     const data = await prisma.invoice.findUnique({
       where: { id: parsedInput.id },

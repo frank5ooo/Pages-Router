@@ -29,6 +29,7 @@ export default function Form({ products }: { products: ProductData[] }) {
       ...formData,
       price: formData.price?.toString(),
     };
+
     try {
       const result = await fetch("/api/updateProduct", {
         method: "POST",

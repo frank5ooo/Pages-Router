@@ -19,9 +19,6 @@ interface Invoice {
   };
 }
 export default function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
-
-  console.log("Invoices recibidas en el componente:", invoices);
-
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

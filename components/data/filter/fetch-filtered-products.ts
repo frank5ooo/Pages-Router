@@ -1,10 +1,26 @@
 import { prisma } from "@/components/prisma";
-import { z } from "zod";    
+import { z } from "zod";
 
 const ITEMS_PER_PAGE = 6;
 
+const FormSchema = z.object({
+  query: z.string(),
+  currentPage: z.number(),
+  status: z.string().optional(),
+});
+
 export async function fetchFilteredProducts(parsedInput: any) {
+
   const { query, currentPage, status } = parsedInput;
+
+
+  const validated = FormSchema.safeParse({ query, currentPage, status });
+
+  if (!validated.success) {
+    console.error("Parámetros de búsqueda inválidos:", validated.error);
+    return 0;
+  }
+
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   const parsedNumber = parseFloat(query);
@@ -21,13 +37,13 @@ export async function fetchFilteredProducts(parsedInput: any) {
         ...(status === "OnStock" ? { invoice_id: { equals: null } } : {}),
         ...(query && query !== ""
           ? {
-              OR: [
-                { name: { contains: query, mode: "insensitive" } },
-                ...(isNumber && maybePrice !== null
-                  ? [{ price: { equals: maybePrice } }]
-                  : []),
-              ],
-            }
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              ...(isNumber && maybePrice !== null
+                ? [{ price: { equals: maybePrice } }]
+                : []),
+            ],
+          }
           : {}),
       },
       select: {

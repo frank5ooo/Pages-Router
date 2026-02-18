@@ -30,10 +30,6 @@ export default function EditInvoiceForm({
   customers: Pick<Customer, "id" | "name">[];
   products: Pick<Product, "id" | "name">[];
 }) {
-  console.log("Invoice in Edit Form:", invoice); // Debug log
-  console.log("Customers in Edit Form:", customers); // Debug log
-  console.log("Products in Edit Form:", products); // Debug log
-
   const availableProducts = useMemo(() => {
     const currentProducts = Array.isArray(invoice?.products) ? invoice.products : [];
     const extraProducts = Array.isArray(products) ? products : [];
