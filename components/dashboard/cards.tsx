@@ -13,20 +13,20 @@ const iconMap = {
 };
 
 export default function CardWrapper({ data }: { data: any }) {
+  // Si data es undefined, usamos un objeto vacío para evitar el crash
   const {
-    numberOfInvoices,
-    numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
-  } = data;
+    numberOfInvoices = 0,
+    numberOfCustomers = 0,
+    totalPaidInvoices = "0",
+    totalPendingInvoices = "0",
+  } = data || {}; // El "|| {}" es el salvavidas
 
   return (
     <>
       <Card title="Collected" value={totalPaidInvoices} type="collected" />
       <Card title="Pending" value={totalPendingInvoices} type="pending" />
       <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
-      <Card title="Total Customers" value={numberOfCustomers} type="customers"
-      />
+      <Card title="Total Customers" value={numberOfCustomers} type="customers" />
     </>
   );
 }

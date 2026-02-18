@@ -31,7 +31,7 @@ export default function Form({ customers, products }: { customers: SelectOption[
     };
 
     try {
-      const response = await fetch('/api/updateInvoice', {
+      const response = await fetch('/api/createInvoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

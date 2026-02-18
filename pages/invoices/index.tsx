@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const currentPage = Number(context.query.page) || 1;
   const status = (context.query.status as string) || "";
 
-  const [totalPages, rawInvoices] = await Promise.all([
+  const [totalPages = 1, rawInvoices] = await Promise.all([
     getInvoicesPagesCount({ query, status, perPage: 6 }),
     fetchFilteredInvoice({ query, currentPage, status })
   ]);
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       currentPage,
-      totalPages: totalPages ?? 1,
+      totalPages,
       invoices: JSON.parse(
         JSON.stringify(rawInvoices, (key, value) =>
           typeof value === "bigint" ? value.toString() : value

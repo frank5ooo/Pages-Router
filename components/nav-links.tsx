@@ -7,20 +7,15 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  {
-    name: 'Invoices',
-    href: '/invoices',
-    icon: DocumentDuplicateIcon,
-  },
+  { name: 'Invoices', href: '/invoices', icon: DocumentDuplicateIcon },
   { name: 'Customers', href: '/customers', icon: UserGroupIcon },
   { name: 'Products', href: '/products', icon: UserGroupIcon },
 ];
 
 export default function NavLinks() {
-  const pathname = useRouter();
+  const { pathname } = useRouter();
   return (
     <>
       {links.map((link) => {
@@ -32,7 +27,7 @@ export default function NavLinks() {
             className={clsx(
               'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
               {
-                'bg-sky-100 text-blue-600': pathname.pathname === link.href,
+                'bg-sky-100 text-blue-600': pathname === link.href,
               },
             )}
           >

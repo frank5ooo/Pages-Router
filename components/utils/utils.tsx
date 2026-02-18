@@ -1,4 +1,5 @@
 import { Revenue } from "./definitions";
+import { SignJWT, jwtVerify } from 'jose'
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString("en-US", {
@@ -68,5 +69,31 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
   ];
 };
 
+const secretKey = process.env.SESSION_SECRET
+const encodedKey = new TextEncoder().encode(secretKey)
+
+export async function encrypt(payload: any) {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(encodedKey)
+}
+
+
+export async function decrypt(session: any) {
+  try {
+    const { payload } = await jwtVerify(session, encodedKey, {
+      algorithms: ['HS256'],
+    })
+    return payload
+  } catch (error) {
+    console.log('Fallo al verificar la sesión')
+    return null
+  }
+}
+
 export type MakePartial<T, K extends keyof T> = Partial<Pick<T, K>> &
   Omit<T, K>;
+
+

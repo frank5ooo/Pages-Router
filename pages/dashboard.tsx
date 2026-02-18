@@ -1,7 +1,8 @@
 import Layout from '@/components/layout';
-import CardWrapper from '@/components/dashboard/cards'; 
+import CardWrapper from '@/components/dashboard/cards';
 import { fetchCardData, fetchLatestInvoices } from '@/components/dashboard/dataDashborad';
 import LatestInvoices from '@/components/dashboard/latest-invoices';
+
 export interface LatestInvoice {
   id: string;
   name: string;
@@ -37,10 +38,6 @@ export async function getServerSideProps() {
 }
 
 export default function DashboardPage({ cardData, latestInvoices }: { cardData: CardData, latestInvoices: LatestInvoice }) {
-
-  console.log(cardData);
-  console.log(latestInvoices);
-
   return (
     <Layout>
       <h1 className="mb-4 text-xl md:text-2xl">Dashboard</h1>
@@ -48,7 +45,7 @@ export default function DashboardPage({ cardData, latestInvoices }: { cardData: 
         <CardWrapper data={cardData} />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <LatestInvoices latestInvoices={latestInvoices}/>
+        <LatestInvoices latestInvoices={latestInvoices} />
       </div>
     </Layout>
   );
